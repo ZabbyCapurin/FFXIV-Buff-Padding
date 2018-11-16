@@ -1,0 +1,32 @@
+{
+  "name": "ffxiv-buff-padding",
+  "title": "FXXIV Buff Padding",
+  "description": "Checks specified characters and if they're padded by buffs.  Uses FF Logs API",
+  "version": "0.0.0",
+  "author": "ZabbyCapurin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZabbyCapurin/Sorting-Hat.git"
+  },
+  "private": true,
+  "dependencies": {
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-scripts": "2.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
