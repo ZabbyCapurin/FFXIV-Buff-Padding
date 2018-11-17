@@ -1,0 +1,69 @@
+{
+    "extends": [
+        "react-app",
+        "plugin:jsx-a11y/recommended",    
+        "eslint:recommended"
+    ],
+    "parser": "babel-eslint",
+    "plugins": [
+        "react",
+        "jsx-a11y"
+    ],
+    "rules": {
+        "no-var": 2,
+        "quotes": [
+            2,
+            "single",
+            {
+                "avoidEscape": 1,
+                "allowTemplateLiterals": 1
+            }
+        ],
+        "linebreak-style": [
+            2,
+            "windows"
+        ],
+        "prefer-template": 1,
+        "no-irregular-whitespace": 1,
+        "no-multi-spaces": 2,
+        "no-param-reassign": 2,
+        "no-template-curly-in-string": 2,
+        "no-trailing-spaces": 2,
+        "spaced-comment": 1,
+        "no-unneeded-ternary": 2,
+        "no-duplicate-imports": 2,
+        "key-spacing": [
+            1,
+            {
+                "beforeColon": 1,
+                "afterColon": 1
+            }
+        ],
+        "semi": [
+            1,
+            "always"
+        ],
+        "array-bracket-spacing": [
+            1,
+            "always",
+            {
+                "arraysInArrays": 0,
+                "objectsInArrays": 0
+            }
+        ],
+        "no-undef": 2,
+        "no-use-before-define": 2,
+        "indent": [
+            2,
+            2,
+            {
+                "SwitchCase": 1,
+                "VariableDeclarator": {
+                    "var": 2,
+                    "let": 2,
+                    "const": 3
+                }
+            }
+        ]
+    }
+  }
