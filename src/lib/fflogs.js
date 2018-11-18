@@ -44,9 +44,9 @@ class FFLogs {
     return fetch(url)
       .then(this.handleErrors);
   }
-  init(characterName, serverName, serverRegion, parseParams, characterRankingParams) { 
-    let characterRanking = this.getCharacterRankings(characterName, serverName, serverRegion, characterRankingParams);
+  getCharacterInfo(characterName, serverName, serverRegion, parseParams, characterRankingParams) {
     let parses = this.getParses(characterName, serverName, serverRegion, parseParams);
+    let characterRanking = this.getCharacterRankings(characterName, serverName, serverRegion, characterRankingParams);
 
     return Promise.all([parses, characterRanking].map(p => p.catch(e => e)));
   }

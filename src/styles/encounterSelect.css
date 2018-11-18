@@ -1,0 +1,14 @@
+#encounters .dropdown-menu,
+#encounters .dropdown,
+#encounters .btn {
+    width: 100%; 
+    text-align: left;
+}
+#encounters .caret {
+    right: 13px;
+    position: absolute;
+    top: 14px;
+}
+#encounters li[role="presentation"] {
+    margin-left: 20px;
+}
