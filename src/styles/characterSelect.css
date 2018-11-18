@@ -1,0 +1,7 @@
+#character .list-group {
+    overflow-y: auto;
+    max-height: 300px;
+    position: absolute;
+    z-index: 100;
+    width: calc(100% - 30px);
+}

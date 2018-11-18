@@ -43,9 +43,12 @@ class App extends Component {
       zones: null,
       selectedCharacter: null,
       attemptedToGetCharacter: false,
-      servers: null
+      servers: null,
+      selectedEncounter: null
     };
+    this.renderBody = this.renderBody.bind(this);
     this.characterSelected = this.characterSelected.bind(this);
+    this.encounterSelected = this.encounterSelected.bind(this);
   }
   componentDidMount() {
     if (this.ffLog) {
@@ -115,10 +118,56 @@ class App extends Component {
     }
   }
   encounterSelected(encnt) {
+    this.setState({ selectedEncounter: encnt });
+  }
+  renderBody() {
+    const { attemptedToGetCharacter, zones, selectedCharacter, selectedEncounter } = this.state;
 
+    let displaySelectedChar = null;
+    let encounterDisplay = null;
+
+    if (selectedCharacter) {
+      const selectedChar = selectedCharacter.info;
+      const { Avatar, Name, Server } = selectedChar.Character;
+
+      displaySelectedChar = (
+        <div id="characterSelected">
+            <img src={Avatar} alt={Name}></img>
+            { Name } | { Server }
+        </div>
+      );
+
+      let encounter = null;
+      if (selectedEncounter) {
+        encounter = (
+          <h2>{selectedEncounter.name}</h2>
+        )
+      }
+
+      encounterDisplay = (
+        <div id="encounterHolder">
+          <EncounterSelect zones={zones} encounterSelected={this.encounterSelected} />
+          { encounter }
+        </div>
+      );
+    } else if (attemptedToGetCharacter) {
+      displaySelectedChar = (
+        <Alert bsStyle="danger">
+          Something went wrong.  The character's data wasn't found.  Please try again or wait a few minutes/hours for XIV API to get it.
+        </Alert>
+      );
+    }
+
+    return (
+      <div id="main-holder">
+        <CharacterSelect xivApi={this.xivApi} characterSelected={this.characterSelected} />
+        { displaySelectedChar }
+        { encounterDisplay }
+      </div>
+    );
   }
   render() {
-    const { attemptedToGetCharacter, zones, servers, selectedCharacter } = this.state;
+    const { servers } = this.state;
     const header = <img src={logo} className="App-logo" alt="logo" />;
     let body = null;
 
@@ -137,31 +186,9 @@ class App extends Component {
       );
     }
     else {
-      let displaySelectedChar = null;
-      if (selectedCharacter) {
-        const selectedChar = selectedCharacter.info;
-        const { Avatar, Name, Server } = selectedChar.Character;
-        displaySelectedChar = (
-            <div id="characterSelected">
-                <img src={Avatar} alt={Name}></img>
-                { Name } | { Server }
-            </div>
-        );
-      } else if (attemptedToGetCharacter) {
-        displaySelectedChar = (
-              <Alert bsStyle="danger">
-                Something went wrong.  The character's data wasn't found.  Please try again or wait a few minutes/hours for XIV API to get it.
-              </Alert>
-        );
-      }
-      body =  (
-        <div id="main-holder">
-          <CharacterSelect xivApi={this.xivApi} characterSelected={this.characterSelected} />
-          {displaySelectedChar}
-          <EncounterSelect zones={zones} encounterSelected={this.encounterSelected} />
-        </div>
-      );
-    }     
+      body = this.renderBody();
+    }
+    
     return (
       <div className="App">
         <header className="App-header">

@@ -71,8 +71,8 @@ class CharacterSelect extends Component {
                             <Button bsStyle="primary" disabled={disableSearchButton} onClick={this.handleCharacterSearch}>Find</Button>
                         </InputGroup.Button>
                     </InputGroup>
+                    {displayFoundCharacters}
                 </Col>
-                {displayFoundCharacters}
             </main>
         );
     }
