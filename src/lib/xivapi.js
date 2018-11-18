@@ -9,12 +9,12 @@ class XIVAPI {
         return response.json();
     }
     findCharacter(name, server) {
-        let url = `${this.base}/character/search?name=${name}${typeof server !== "undefined" ? server + `&server=${server}`: ''}&columns=Avatar,ID,Name,Server`;
+        let url = `${this.base}/character/search?name=${name}${typeof server !== "undefined" && server !== null ? server + `&server=${server}`: ''}&columns=Avatar,ID,Name,Server`;
         return fetch(url)
             .then(this.handleErrors);
     }
     getCharacter(lodestoneId, data) {
-        let url = `${this.base}/character/${lodestoneId}?${typeof data !== "undefined" ? data + `&data=${data}`: ''}`;
+        let url = `${this.base}/character/${lodestoneId}?${typeof data !== "undefined" && data !== null  ? data + `&data=${data}`: ''}`;
         var urlUpdate = `${this.base}/character/${lodestoneId}/update`;
         return fetch(urlUpdate)
             .then(response => this.handleErrors(response, false))

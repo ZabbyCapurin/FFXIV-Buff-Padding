@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { groupBy, map } from 'lodash';
 import {
-    DropdownButton, MenuItem, ControlLabel, Col
+    ControlLabel, Col
 } from 'react-bootstrap';
+import { Typeahead, Menu, MenuItem, Highlighter } from 'react-bootstrap-typeahead';
 
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import '../styles/encounterSelect.css';
 
 class EncounterSelect extends Component {
@@ -34,51 +37,78 @@ class EncounterSelect extends Component {
         this.state = {
             foundEncounters: []
         };
-        this.handleEncounterSearch = this.handleEncounterSearch.bind(this);
         this.selectedEncounter = this.selectedEncounter.bind(this);
+        this.renderMenuItems = this.renderMenuItems.bind(this);
     }
     componentDidMount() {
     }
-    handleEncounterSearch() {
-        this.setState({ disableSearchButton: true });
-        this.props.xivApi.findCharacter(this.encounterSearchInput.value).then(encounter => {
-            this.setState({ foundEncounters: encounter.Results, disableSearchButton: false });
-        });
-    }
     selectedEncounter(selectedEncounters) {
         this.setState({ foundEncounters: [] });
-        this.props.encounterSelected(selectedEncounters);
+        if (this.selectedEncounter.length > 0) {
+            this.props.encounterSelected(selectedEncounters[0]);
+        }
+    }
+    renderMenuItems(results, menuProps) {
+        let idx = 0;
+        const grouped = groupBy(results, (r) => r.zoneName);
+        const items = Object.keys(grouped).sort().map(zone => {
+            const encnts = map(grouped[zone], (e => {
+                const item =(
+                    <MenuItem key={e.value} option={e} position={idx}>
+                        <Highlighter search={menuProps.label}>
+                            { e.label }
+                        </Highlighter>
+                    </MenuItem >
+                );
+                idx += 1;
+                return item;
+            }));
+
+            let zoneName = zone.replace(/[\W_]+/g, '-');
+            if (zoneName.slice(-1) === '-') {
+                zoneName = zoneName.slice(0, -1);
+            }
+            const header = (                
+                <Menu.Header key={`${zoneName}-header`}>
+                    { zone }
+                </Menu.Header>
+            );
+            const divider = !!idx && <Menu.Divider key={`${zoneName}-divider`} />;
+            return [
+                divider,
+                header,
+                encnts
+            ]
+        });
+        return <Menu {...menuProps}>{items}</Menu>;
     }
     render() {
         const { zones } = this.props;
-        const mappedFoundEncounters = zones.map(zone => {
-            const encnts = zone.encounters.map(e =>{
-                return (
-                    <MenuItem key={e.id} onClick={() => this.selectedEncounter(e)}>
-                        { e.name }
-                    </MenuItem >
-                );
+        const options = zones.reduce((zoneHolder, zone) => {
+            const encounters = zone.encounters.map(e =>{
+                return {
+                    value: e.id,
+                    label: e.name,
+                    zone: zone,
+                    zoneName: zone.name
+                };
             });
-            encnts.unshift(
-                <MenuItem key={zone.id} header >
-                    { zone.name }
-                </MenuItem >
-            );
-            return encnts;
-        });
+            return encounters.concat(zoneHolder);
+        }, []);
+
         return (
             <main id="encounters" className="container-fluid">            
                 <Col xs={4} sm={4} md={4} lg={4}>
                     <ControlLabel>Select Encounter: </ControlLabel>
                 </Col>
                 <Col xs={8} sm={8} md={8} lg={8}>
-                    <DropdownButton
+                    <Typeahead
                         id="encounterSearch"
-                        title="Encounters"
-                        ref={ref => { this.encounterSearchInput = ref; }}
-                    >
-                    {mappedFoundEncounters}
-                    </DropdownButton>
+                        options={options}
+                        placeholder="Choose an Encounter..."
+                        onChange={this.selectedEncounter}
+                        renderMenu={this.renderMenuItems}
+                    />
                 </Col>
             </main>
         );

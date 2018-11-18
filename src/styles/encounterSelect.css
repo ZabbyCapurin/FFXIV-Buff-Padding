@@ -4,11 +4,16 @@
     width: 100%; 
     text-align: left;
 }
+#encounters .dropdown-menu {
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 100;
+}
 #encounters .caret {
     right: 13px;
     position: absolute;
     top: 14px;
 }
-#encounters li[role="presentation"] {
-    margin-left: 20px;
+#encounters li[role="option"] a {
+    padding-left: 40px;
 }

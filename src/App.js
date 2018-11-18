@@ -97,6 +97,31 @@ class App extends Component {
       });
     }
   }
+  getCharacterParses(name, server, char, encounter) {
+    const { selectedCharacter, servers } = this.state;
+
+    const serverRegion = App.getServerRegion(server, servers);
+    const params = typeof encounter !== 'undefined' && encounter !== null ? '' : null;
+
+    this.ffLog.getCharacterInfo(name, server, serverRegion, params).then(results => {
+      const parses = results[0];
+      const ranking = results[1];
+      if (typeof char !== 'undefined') {
+        const character = {
+          info: char,
+          parses,
+          ranking
+        }
+        this.setState({ selectedCharacter: character });
+      } else {
+        const character = JSON.parse(JSON.stringify(selectedCharacter));
+        character.parses = parses;
+        character.ranking = ranking;
+        
+        this.setState({ selectedCharacter: character });
+      }
+    });
+  }
   characterSelected(char) {
     if (typeof char === 'undefined' || char === null ||
       typeof char.Character === 'undefined' || char.Character === null)
@@ -104,21 +129,16 @@ class App extends Component {
       this.setState({ selectedCharacter: null, attemptedToGetCharacter: true});
     } else {
       const { Name, Server } = char.Character;
-      const serverRegion = App.getServerRegion(Server, this.state.servers);
-      this.ffLog.getCharacterInfo(Name, Server, serverRegion).then(results => {
-        const parses = results[0];
-        const ranking = results[1];
-        const character = {
-          info: char,
-          parses,
-          ranking
-        }
-        this.setState({ selectedCharacter: character });
-      });
+      this.getCharacterParses(Name, Server, char);
     }
   }
-  encounterSelected(encnt) {
-    this.setState({ selectedEncounter: encnt });
+  encounterSelected(selectedEncounter) {
+    // const selectedEncounter = JSON.parse(JSON.stringify(encounter.zone));
+    
+    // delete selectedEncounter.encounters;
+    // selectedEncounter.encounter = encounter;
+
+    this.setState({ selectedEncounter });
   }
   renderBody() {
     const { attemptedToGetCharacter, zones, selectedCharacter, selectedEncounter } = this.state;
@@ -140,7 +160,7 @@ class App extends Component {
       let encounter = null;
       if (selectedEncounter) {
         encounter = (
-          <h2>{selectedEncounter.name}</h2>
+          <h2>{selectedEncounter.label}</h2>
         )
       }
 
