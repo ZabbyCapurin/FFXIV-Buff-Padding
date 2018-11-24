@@ -1,7 +1,7 @@
-class FFLogs {  
+class FFLogs {
   constructor(apiKey) {
     this.apiKey = apiKey;
-    this.base = 'https://www.fflogs.com:443/v1'
+    this.base = 'https://www.fflogs.com:443/v1';
   }
   handleErrors(response) {
     if (!response.ok) {
@@ -10,37 +10,37 @@ class FFLogs {
     return response.json();
   }
   getZones(params) {
-    let url = `${this.base}/zones?${typeof params !== "undefined"  && params !== null? params + '&': ''}api_key=${this.apiKey}`;
+    let url = `${this.base}/zones?${typeof params !== 'undefined' && params !== null? `${params }&`: ''}api_key=${this.apiKey}`;
     return fetch(url)
       .then(this.handleErrors);
   }
-  getClasses(params) {                             
-    let url = `${this.base}/classes?${typeof params !== "undefined"  && params !== null? params + '&': ''}api_key=${this.apiKey}`;
+  getClasses(params) {
+    let url = `${this.base}/classes?${typeof params !== 'undefined' && params !== null? `${params }&`: ''}api_key=${this.apiKey}`;
     return fetch(url)
       .then(this.handleErrors);
   }
   getEncounterRankings(encounterId, params) {
-    let url = `${this.base}/rankings/encounter/${encounterId}?${typeof params !== "undefined"  && params !== null? params + '&': ''}api_key=${this.apiKey}`;
+    let url = `${this.base}/rankings/encounter/${encounterId}?${typeof params !== 'undefined' && params !== null? `${params }&`: ''}api_key=${this.apiKey}`;
     return fetch(url)
       .then(this.handleErrors);
   }
   getCharacterRankings(characterName, serverName, serverRegion, params) {
-    let url = `${this.base}/rankings/character/${characterName}/${serverName}/${serverRegion}?${typeof params !== "undefined"  && params !== null? params + '&': ''}api_key=${this.apiKey}`;
+    let url = `${this.base}/rankings/character/${characterName}/${serverName}/${serverRegion}?${typeof params !== 'undefined' && params !== null? `${params }&`: ''}api_key=${this.apiKey}`;
     return fetch(url)
       .then(this.handleErrors);
   }
   getParses(characterName, serverName, serverRegion, params) {
-    let url = `${this.base}/parses/character/${characterName}/${serverName}/${serverRegion}?${typeof params !== "undefined"  && params !== null? params + '&': ''}api_key=${this.apiKey}`;
+    let url = `${this.base}/parses/character/${characterName}/${serverName}/${serverRegion}?${typeof params !== 'undefined' && params !== null? `${params }&`: ''}api_key=${this.apiKey}`;
     return fetch(url)
       .then(this.handleErrors);
   }
   getGuildReports(guildName, serverName, serverRegion, params) {
-    let url = `${this.base}/reports/guild/${guildName}/${serverName}/${serverRegion}?${typeof params !== "undefined"  && params !== null? params + '&': ''}api_key=${this.apiKey}`;
+    let url = `${this.base}/reports/guild/${guildName}/${serverName}/${serverRegion}?${typeof params !== 'undefined' && params !== null? `${params }&`: ''}api_key=${this.apiKey}`;
     return fetch(url)
       .then(this.handleErrors);
   }
   getUserReports(userName, params) {
-    let url = `${this.base}/reports/user/${userName}?${typeof params !== "undefined"  && params !== null? params + '&': ''}api_key=${this.apiKey}`;
+    let url = `${this.base}/reports/user/${userName}?${typeof params !== 'undefined' && params !== null? `${params }&`: ''}api_key=${this.apiKey}`;
     return fetch(url)
       .then(this.handleErrors);
   }
@@ -48,7 +48,26 @@ class FFLogs {
     let parses = this.getParses(characterName, serverName, serverRegion, parseParams);
     let characterRanking = this.getCharacterRankings(characterName, serverName, serverRegion, characterRankingParams);
 
-    return Promise.all([parses, characterRanking].map(p => p.catch(e => e)));
+    return Promise.all([ parses, characterRanking ].map(p => p.catch(e => e)));
+  }
+  getFights(reportId) {
+    let url = `${this.base}/report/fights/${reportId}?&api_key=${this.apiKey}`;
+    return fetch(url)
+      .then(this.handleErrors);
+  }
+  getEvents(reportId, fightStart, fightEnd, next, allEvents = []) {
+    let url = `${this.base}/report/events/${reportId}?start=${fightStart}&end=${fightEnd}${typeof next !== 'undefined' && next !== null ? next : ''}&api_key=${this.apiKey}`;
+    return fetch(url)
+      .then(this.handleErrors)
+      .then(events => {
+        const allEventsClone = allEvents.concat(events.results);
+        if (events.next) {
+          FFLogs.getEvents(reportId, fightStart, fightEnd, events.next, allEventsClone).then(this.handleErrors);
+        } else {
+          return allEventsClone;
+        }
+      })
+      .then(this.handleErrors);
   }
 }
 

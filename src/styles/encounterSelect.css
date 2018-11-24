@@ -17,3 +17,8 @@
 #encounters li[role="option"] a {
     padding-left: 40px;
 }
+
+#encounterHolder h2 > span {
+    display: block;
+    font-size: .7em;
+  }

@@ -15,12 +15,12 @@
             2,
             "single",
             {
-                "avoidEscape": 1,
-                "allowTemplateLiterals": 1
+                "avoidEscape": true,
+                "allowTemplateLiterals": true
             }
         ],
         "linebreak-style": [
-            2,
+            0,
             "windows"
         ],
         "prefer-template": 1,
@@ -32,13 +32,6 @@
         "spaced-comment": 1,
         "no-unneeded-ternary": 2,
         "no-duplicate-imports": 2,
-        "key-spacing": [
-            1,
-            {
-                "beforeColon": 1,
-                "afterColon": 1
-            }
-        ],
         "semi": [
             1,
             "always"
@@ -47,8 +40,8 @@
             1,
             "always",
             {
-                "arraysInArrays": 0,
-                "objectsInArrays": 0
+                "arraysInArrays": true,
+                "objectsInArrays": true
             }
         ],
         "no-undef": 2,
@@ -64,6 +57,12 @@
                     "const": 3
                 }
             }
-        ]
+        ],
+        "prefer-destructuring": ["error", {
+            "array": true,
+            "object": true
+        }, {
+            "enforceForRenamedProperties": false
+        }]
     }
-  }
+}
